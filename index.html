@@ -1515,7 +1515,7 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 @media(max-width:600px){ .hdr-actions .gs-btn{padding:8px 11px} body.bd-compact .hdr-actions .gs-btn span{display:none} }
 
 /* ===== 모바일 단계별 선택 (화면 너비 768px 이하) =====
-   한 화면에 선택 묶음 하나 → 과목을 누르면 체크 → 다음 묶음으로 자동 이동 → 마지막에 확인 후 제출 */
+   세로로 이어지는 화면: 위에는 고른 묶음(접힘), 아래에는 지금 고를 묶음 → 다 고르면 다음 묶음으로 스크롤 → 마지막에 확인 후 제출 */
 #wz,.wz-enter{display:none}
 @media (max-width:768px){
   .wz-enter{display:block;padding:12px 16px 0}
@@ -1523,13 +1523,14 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
   body.wz-on{background:#F4F6FB}
   body.wz-on .top-sticky,body.wz-on #page-checklist,body.wz-on footer,body.wz-on .top-link{display:none!important}
   body.wz-on #wz{display:flex}
+  body.wz-on .jj-toast{bottom:96px;width:max-content;max-width:calc(100% - 32px);text-align:center}
 }
 #wz{flex-direction:column;min-height:100vh;min-height:100dvh;color:var(--ink);line-height:1.5}
 .wz-top{position:sticky;top:0;z-index:30;background:rgba(244,246,251,.94);backdrop-filter:blur(8px);padding:6px 8px 10px}
 .wz-top-row{display:flex;align-items:center;height:44px}
 .wz-back,.wz-fwd{flex:none;min-width:64px;height:44px;border:0;background:none;font:inherit;font-weight:700;color:var(--ink-soft);border-radius:12px;padding:0 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .wz-back{text-align:left;font-size:30px;line-height:1}
-.wz-fwd{text-align:right;font-size:15px;color:var(--blue)}
+.wz-fwd{visibility:hidden}
 .wz-step{flex:1;text-align:center;font-size:14px;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
 .wz-step b{font-size:17px;color:var(--ink)}
 .wz-track{height:5px;margin:2px 12px 0;border-radius:3px;background:#DDE2EE;overflow:hidden}
@@ -1562,14 +1563,20 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 .wz-opt.shake{animation:wzShake .3s}
 @keyframes wzShake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
-/* 확인 화면 */
+/* 세로로 쌓이는 묶음: 덜 고른 묶음은 펼쳐서, 다 고른 묶음은 고른 과목만 보이게 접어서 */
+.wz-sec{margin:18px 0 30px}
+.wz-sec.new{animation:wzUp .32s ease both}
+@keyframes wzUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.wz-list.more{padding-bottom:45vh}
+.wz-finish{margin-top:30px}
+.wz-card::before{content:"✓";position:absolute;left:14px;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:900;line-height:1}
+.wz-card.lock::before{content:"🔒";background:var(--bd-amber-bg);font-size:13px}
+.wz-card.lock i{color:var(--ink-soft)}
 .wz-sem{margin:22px 0 8px;font-size:13.5px;font-weight:800;color:var(--ink-soft)}
-.wz-card{position:relative;display:block;width:100%;margin-bottom:10px;padding:14px 56px 14px 16px;border:1.5px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wz-card{position:relative;display:block;width:100%;margin-bottom:10px;padding:14px 56px 14px 52px;border:1.5px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .wz-card small{display:block;margin-bottom:3px;font-size:13px;font-weight:600;color:var(--ink-soft)}
 .wz-card b{display:block;font-size:17px;font-weight:700;line-height:1.45;word-break:keep-all}
 .wz-card i{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;font-size:13px;font-weight:700;color:var(--blue)}
-.wz-card.miss{border-color:#E9A5A5;background:#FFF5F5}
-.wz-card.miss b{color:var(--bd-todo)}
 .wz-done-mark{width:64px;height:64px;margin:12px 0 18px;border-radius:50%;background:#E3F6EC;color:var(--bd-ok);display:grid;place-items:center;font-size:32px;font-weight:900}
 .wz-links{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 8px;margin-top:26px}
 .wz-links button{min-height:44px;padding:0 12px;border:0;background:none;color:var(--ink-soft);font:inherit;font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
@@ -1578,7 +1585,7 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 .wz-btn{flex:1;min-height:56px;border:2px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);font:inherit;font-size:17px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .wz-btn.primary{flex:1.6;border-color:var(--blue);background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(47,91,234,.3)}
 .wz-btn:active{transform:scale(.98)}
-@media (prefers-reduced-motion:reduce){ .wz-screen.fwd,.wz-screen.back,.wz-opt.shake{animation:none} .wz-opt,.wz-chk,.wz-track i{transition:none} }
+@media (prefers-reduced-motion:reduce){ .wz-screen.fwd,.wz-screen.back,.wz-opt.shake,.wz-sec.new{animation:none} .wz-opt,.wz-chk,.wz-track i{transition:none} }
 </style>
 </head>
 <body>
@@ -1612,7 +1619,7 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
     <div class="wz-top-row">
       <button type="button" class="wz-back" id="wzBack" aria-label="이전 단계">‹</button>
       <div class="wz-step" id="wzStep" aria-live="polite"></div>
-      <button type="button" class="wz-fwd" id="wzFwd">다음 ›</button>
+      <span class="wz-fwd" aria-hidden="true"></span>
     </div>
     <div class="wz-track" aria-hidden="true"><i id="wzFill"></i></div>
   </div>
@@ -3882,7 +3889,8 @@ document.getElementById("topBtn").addEventListener("click",e=>{
 
 /* =====================================================================
    모바일 단계별 선택 (화면 너비 768px 이하)
-   ─ 한 화면에 선택 묶음 하나: 과목을 누르면 체크 → 다음 묶음으로 자동 이동 → 마지막에 확인 후 제출
+   ─ 세로로 이어지는 한 화면: 위에는 이미 고른 묶음(고른 과목만 접어서 표시), 아래에는 지금 고를 묶음
+   ─ 위 묶음을 다 골라야 다음 묶음이 열리고, 다 고르면 그 묶음으로 스크롤 → 마지막에 확인 후 제출
    ─ 선택·검증·저장·제출은 기존 체크리스트 코드를 그대로 사용합니다.
      (숨은 체크박스(data-sem/grp/name)로 change 이벤트를 보내 기존 핸들러가 처리)
 ===================================================================== */
@@ -3890,13 +3898,18 @@ document.getElementById("topBtn").addEventListener("click",e=>{
   const root=document.getElementById("wz"); if(!root || !ckView) return;
   const $ = id => document.getElementById(id);
   const esc = s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  const body=$("wzBody"), actions=$("wzActions"), backBtn=$("wzBack"), fwdBtn=$("wzFwd");
+  const body=$("wzBody"), actions=$("wzActions"), backBtn=$("wzBack");
   const mq=matchMedia("(max-width: 768px)");
+  /* 사이트 CSS가 html{scroll-behavior:smooth}라서, 바로 옮길 때는 "instant"를 명시해야 함 */
+  const smooth = ()=>matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
   const OFF_KEY="jj_wz_off";            // '전체 화면으로 보기'를 고른 브라우저는 기존 화면으로 시작
-  const HOLD=420;                       // 고른 표시를 보여 준 뒤 다음으로 넘어가기까지(ms)
+  const HOLD=420;                       // 고른 표시를 보여 준 뒤 다음 묶음으로 넘어가기까지(ms)
   let off=false; try{ off=localStorage.getItem(OFF_KEY)==="1"; }catch(e){}
-  let pos="intro";                      // "intro" | 0…n-1 (선택 묶음) | "review" | "done"
-  let busy=false, timer=0, fromReview=false;
+  let pos="intro";                      // "intro"(학년) | "list"(과목 선택) | "done"(제출 완료)
+  let busy=false, timer=0;
+  let reached=0;                        // 이 번호의 묶음까지 화면에 보임
+  let editing=null, holding=null;       // 다시 펼쳐 고치는 묶음 / 방금 다 골라 잠깐 펼쳐 둔 묶음
+  let lastShape="";
 
   const school = ()=>($("cfgCkName")||{}).textContent || SITE.name || "우리 학교";
   const grade = ()=>(myGrade===1||myGrade===2) && CK_GRADES[myGrade] ? myGrade : null;
@@ -3906,7 +3919,11 @@ document.getElementById("topBtn").addEventListener("click",e=>{
   const isDone = st=>selOf(st).length>=st.g.pick;
   const lockOf = st=>RULES_ON ? activeLock(st.sem.id, st.g.name) : null;
   const title = g=>g.name.replace(/\s+\d+$/,"");
-  const startPos = ()=>{ const list=steps(); if(!list.length) return "intro"; const i=list.findIndex(st=>!isDone(st)); return i<0 ? "review" : i; };
+  const firstTodo = ()=>steps().findIndex(st=>!isDone(st));
+  const allDone = ()=>holding===null && firstTodo()<0;
+  /* 덜 고른 묶음은 펼쳐서(과목 버튼), 다 고른 묶음은 접어서(고른 과목만) 보여 줌 */
+  const isOpen = (st,i)=>!lockOf(st) && (!isDone(st) || editing===i || holding===i);
+  const shape = ()=>steps().map((st,i)=>i>reached ? "" : isOpen(st,i) ? "o" : "c:"+selOf(st).join(",")).join("|")+"#"+allDone();
 
   /* 기존 체크박스 핸들러에 선택/해제를 맡김 → 택N·계열·위계·연계 규칙과 저장이 그대로 적용됨 */
   function send(st, name, on){
@@ -3929,76 +3946,92 @@ document.getElementById("topBtn").addEventListener("click",e=>{
       <div class="wz-opts">${btn(1)}${btn(2)}</div>
       <div class="wz-links">${LOCKED?"":`<button type="button" data-act="school">다른 학교 고르기</button>`}<button type="button" data-act="full">전체 화면으로 보기</button></div></div>`;
   }
-  function stepHTML(st, i){
-    const g=st.g, lk=lockOf(st);
-    return `<div class="wz-screen"><p class="wz-eyebrow">선택 ${i+1} <span>· ${esc(st.sem.name)}</span></p>
+  function secHTML(st, i, fresh){
+    const g=st.g, lk=lockOf(st), sel=selOf(st);
+    if(!isOpen(st,i))
+      return `<button type="button" class="wz-card ${lk?"lock":""}" id="wzSec${i}" data-edit="${i}"><small>선택 ${i+1} · ${esc(title(g))}</small><b>${esc(sel.join(", "))}</b><i>${lk?"고정":"수정"}</i></button>`;
+    return `<section class="wz-sec ${fresh?"new":""}" id="wzSec${i}" data-i="${i}"><p class="wz-eyebrow">선택 ${i+1} <span>· ${esc(st.sem.name)}</span></p>
       <h2 tabindex="-1">${esc(title(g))} 과목${g.pick>1?` ${g.pick}개를`:"을"} 선택하세요.</h2>
-      ${g.pick>1 && !lk ? `<p class="wz-count" id="wzCount"></p>` : ""}
-      ${lk ? `<p class="wz-note">🔒 ${esc(semName(lk.fromSem))}에서 '${esc(lk.fromSub)}'을(를) 골라서, 이 묶음은 '${esc(lk.toSub)}'(으)로 정해졌어요.</p>` : ""}
-      <div class="wz-opts">${g.options.map(o=>`<button type="button" class="wz-opt" data-name="${esc(o[0])}" aria-pressed="false" ${lk && o[0]!==lk.toSub?"disabled":""}>${esc(o[0])}<span class="wz-chk" aria-hidden="true">✓</span></button>`).join("")}</div></div>`;
+      ${g.pick>1 ? `<p class="wz-count"><b>${sel.length}</b> / ${g.pick}과목 선택</p>` : ""}
+      <div class="wz-opts">${g.options.map(o=>`<button type="button" class="wz-opt" data-i="${i}" data-name="${esc(o[0])}" aria-pressed="${sel.includes(o[0])}">${esc(o[0])}<span class="wz-chk" aria-hidden="true">✓</span></button>`).join("")}</div></section>`;
   }
-  function reviewHTML(){
-    const list=steps(), allDone=list.every(isDone);
-    let cards="", sem=null;
-    list.forEach((st,i)=>{
-      if(st.sem!==sem){ sem=st.sem; cards+=`<h3 class="wz-sem">${esc(sem.name)}</h3>`; }
-      const sel=selOf(st), ok=isDone(st);
-      cards+=`<button type="button" class="wz-card ${ok?"":"miss"}" data-jump="${i}"><small>${esc(title(st.g))}</small><b>${sel.length?esc(sel.join(", ")):"아직 고르지 않았어요"}</b><i>${ok?"수정":"선택"}</i></button>`;
+  function listHTML(fresh){
+    const done=allDone();
+    let html="", sem=null;
+    steps().forEach((st,i)=>{
+      if(i>reached) return;
+      if(st.sem!==sem){ sem=st.sem; html+=`<h3 class="wz-sem">${esc(sem.name)}</h3>`; }
+      html+=secHTML(st, i, i===fresh);
     });
-    return `<div class="wz-screen"><h2 tabindex="-1">${allDone?"과목 선택이 완료되었습니다.":"아직 고르지 않은 과목이 있어요."}</h2>
-      <p class="wz-lead">${allDone?"선택한 과목을 확인해 주세요.":"빨간 칸을 눌러 마저 골라 주세요."}</p>${cards}
+    if(done) html+=`<div class="wz-finish" id="wzFinish"><h2 tabindex="-1">과목 선택이 완료되었습니다.</h2>
+      <p class="wz-lead">위에서 선택한 과목을 확인해 주세요. 바꾸려면 그 칸을 누르면 됩니다.</p>
       <div class="wz-links"><button type="button" data-act="full">전체 화면으로 보기</button></div></div>`;
+    return `<div class="wz-screen wz-list ${done?"":"more"}">${html}</div>`;
   }
   function doneHTML(){
     return `<div class="wz-screen"><div class="wz-done-mark" aria-hidden="true">✓</div><h2 tabindex="-1">제출되었습니다.</h2>
       <p class="wz-lead">${esc(school())}에 과목 선택 결과를 보냈어요. 바꾸고 싶으면 다시 고른 뒤 한 번 더 제출하세요.</p></div>`;
   }
   function actionsHTML(){
-    if(pos==="review") return steps().every(isDone)
-      ? `<button type="button" class="wz-btn" data-act="edit">선택 수정</button><button type="button" class="wz-btn primary" data-act="submit">최종 제출</button>`
-      : `<button type="button" class="wz-btn primary" data-act="resume">이어서 선택</button>`;
+    if(pos==="list" && allDone()) return `<button type="button" class="wz-btn" data-act="edit">선택 수정</button><button type="button" class="wz-btn primary" data-act="submit">최종 제출</button>`;
     if(pos==="done") return `<button type="button" class="wz-btn" data-act="review">선택 다시 보기</button>`;
-    if(typeof pos==="number" && lockOf(steps()[pos])) return `<button type="button" class="wz-btn primary" data-act="next">다음</button>`;
     return "";
   }
 
-  /* 단계 이동: 화면을 새로 그리고 방향에 맞춰 슬라이드 (dir: "fwd" | "back") */
-  function show(p, dir){
-    clearTimeout(timer); busy=false; pos=p;
-    if(p==="review") fromReview=false;
-    const list=steps(), n=list.length, isStep=typeof p==="number";
-    backBtn.style.visibility = (p==="intro"||p==="done") ? "hidden" : "visible";
-    $("wzStep").innerHTML = isStep ? `<b>${p+1}</b> / ${n}` : p==="review" ? "선택 확인" : p==="done" ? "제출 완료" : "";
-    $("wzFill").style.width = (isStep ? (p+1)/n*100 : p==="intro" ? 0 : 100) + "%";
-    $("wzFill").parentNode.style.visibility = p==="intro" ? "hidden" : "visible";
-    body.innerHTML = isStep ? stepHTML(list[p], p) : p==="review" ? reviewHTML() : p==="done" ? doneHTML() : introHTML();
+  /* 상단: 이전(학년 선택으로) · 다 고른 묶음 수 · 진행 막대 */
+  function header(){
+    const list=steps(), n=list.length, d=list.filter(isDone).length;
+    backBtn.style.visibility = pos==="list" ? "visible" : "hidden";
+    $("wzStep").innerHTML = pos==="list" ? `<b>${d}</b> / ${n}` : pos==="done" ? "제출 완료" : "";
+    $("wzFill").style.width = (pos==="list" ? (n ? d/n*100 : 0) : pos==="done" ? 100 : 0) + "%";
+    $("wzFill").parentNode.style.visibility = pos==="intro" ? "hidden" : "visible";
+  }
+  /* 화면을 새로 그림. fresh = 방금 새로 열린 묶음 번호(아래에서 올라오는 효과) */
+  function draw(fresh){
+    body.innerHTML = pos==="list" ? listHTML(fresh) : pos==="done" ? doneHTML() : introHTML();
     const a=actionsHTML(); actions.innerHTML=a; actions.hidden=!a;
-    paint();
-    window.scrollTo(0,0);
-    if(dir){ body.firstElementChild.classList.add(dir); const h=body.querySelector("h1,h2"); if(h) h.focus({preventScroll:true}); }
+    header(); lastShape=shape();
   }
-  /* 지금 단계의 선택 상태만 다시 칠함 (버튼 색·체크, 개수, '다음') */
-  function paint(){
-    const st=typeof pos==="number" ? steps()[pos] : null;
-    fwdBtn.style.visibility = st && isDone(st) && !busy ? "visible" : "hidden";
-    if(!st) return;
-    const sel=selOf(st), lk=lockOf(st);
-    body.querySelectorAll(".wz-opt[data-name]").forEach(b=>b.setAttribute("aria-pressed", String(lk ? b.dataset.name===lk.toSub : sel.includes(b.dataset.name))));
-    const c=$("wzCount"); if(c) c.innerHTML=`<b>${sel.length}</b> / ${st.g.pick}과목 선택`;
+  /* 펼쳐진 묶음의 버튼 색·체크와 개수만 다시 칠함. 접힘/펼침이 달라졌으면 새로 그림 */
+  function refresh(){
+    if(shape()!==lastShape) return draw();
+    header();
+    body.querySelectorAll(".wz-sec").forEach(sec=>{
+      const st=steps()[+sec.dataset.i], sel=selOf(st);
+      sec.querySelectorAll(".wz-opt").forEach(b=>b.setAttribute("aria-pressed", String(sel.includes(b.dataset.name))));
+      const c=sec.querySelector(".wz-count"); if(c) c.innerHTML=`<b>${sel.length}</b> / ${st.g.pick}과목 선택`;
+    });
   }
-  function next(){
-    if(fromReview || typeof pos!=="number" || pos+1>=steps().length) return show("review","fwd");
-    show(pos+1,"fwd");
+  /* 고를 묶음이 화면 위쪽 38% 안에서 시작하도록 필요한 만큼만 스크롤 → 위에 고른 과목들이 계속 보임 */
+  function reveal(el, instant){
+    const top=el.getBoundingClientRect().top, want=Math.max(78, Math.min(top, innerHeight*.38));
+    if(Math.abs(top-want)>1) window.scrollBy({top:top-want, behavior:instant ? "instant" : smooth()});
   }
-  function back(){
-    fromReview=false;
-    if(pos==="review"){ const n=steps().length; return show(n ? n-1 : "intro","back"); }
-    if(typeof pos==="number") show(pos>0 ? pos-1 : "intro","back");
+  /* 화면 전환 (dir: "fwd" | "back" 슬라이드) */
+  function show(p, dir){
+    clearTimeout(timer); busy=false; editing=holding=null; pos=p;
+    const t=firstTodo();
+    if(p==="list") reached = t<0 ? steps().length-1 : t;
+    draw();
+    if(dir) body.firstElementChild.classList.add(dir);
+    window.scrollTo({top:0, behavior:"instant"});
+    if(p==="list" && t>0) reveal($("wzSec"+t), true);                       // 이어서 고를 묶음부터 보이게
+    else if(dir){ const h=body.querySelector("h1,h2"); if(h) h.focus({preventScroll:true}); }
   }
-  /* 고른 표시를 잠깐 보여 준 뒤 다음 단계로. 기존 안내 팝업이 떠 있으면 닫힌 뒤에 넘어감 */
-  function advanceSoon(){
-    busy=true; paint();
-    const go=()=>{ timer=setTimeout(next, HOLD); };
+  /* 묶음을 다 골랐을 때: 접고, 다음으로 고를 묶음을 열어 그쪽으로 스크롤 */
+  function settle(){
+    busy=false; editing=holding=null;
+    const t=firstTodo(), fresh = t>reached ? t : null;
+    reached=Math.max(reached, t<0 ? steps().length-1 : t);
+    draw(fresh);
+    const target=$(t<0 ? "wzFinish" : "wzSec"+t);
+    reveal(target);
+    const h=target.querySelector("h2"); if(h) h.focus({preventScroll:true});
+  }
+  /* 고른 표시를 잠깐 보여 준 뒤 넘어감. 기존 안내 팝업이 떠 있으면 닫힌 뒤에 */
+  function settleSoon(){
+    busy=true;
+    const go=()=>{ timer=setTimeout(settle, HOLD); };
     if(!caOverlay.classList.contains("open")) return go();
     const ob=new MutationObserver(()=>{ if(caOverlay.classList.contains("open")) return; ob.disconnect(); if(busy) go(); });
     ob.observe(caOverlay,{attributes:true,attributeFilter:["class"]});
@@ -4006,9 +4039,8 @@ document.getElementById("topBtn").addEventListener("click",e=>{
 
   function tap(b){
     if(busy) return;
-    const st=steps()[pos], name=b.dataset.name, sel=selOf(st);
-    if(lockOf(st)) return;
-    if(sel.includes(name)){ send(st,name,false); paint(); return; }          // 다시 누르면 해제
+    const i=+b.dataset.i, st=steps()[i], name=b.dataset.name, sel=selOf(st);
+    if(sel.includes(name)){ send(st,name,false); return refresh(); }         // 다시 누르면 해제
     if(st.g.pick===1 && sel.length) send(st, sel[0], false);                  // 하나만 고르는 묶음은 바꿔 고르기
     else if(sel.length>=st.g.pick){
       b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
@@ -4016,8 +4048,16 @@ document.getElementById("topBtn").addEventListener("click",e=>{
       return;
     }
     const ok=send(st,name,true);          // 규칙에 걸리면 기존 안내 팝업이 뜨고 선택되지 않음
-    paint();
-    if(ok && isDone(st)) advanceSoon();
+    if(ok && isDone(st)){ holding=i; refresh(); settleSoon(); }
+    else refresh();
+  }
+  /* 접힌 묶음을 누르면 다시 펼쳐 고침. 앞 학기 선택으로 고정된 묶음은 이유만 알려 줌 */
+  function edit(i){
+    if(busy) return;
+    const lk=lockOf(steps()[i]);
+    if(lk) return showToast(`${semName(lk.fromSem)}의 '${lk.fromSub}' 선택에 따라 정해진 과목이에요. 바꾸려면 '${lk.fromSub}'을(를) 먼저 바꾸세요.`, 4500);
+    editing=i; draw();
+    reveal($("wzSec"+i));
   }
   function pickGrade(g, b){
     if(busy) return;
@@ -4025,40 +4065,37 @@ document.getElementById("topBtn").addEventListener("click",e=>{
     gdShowAll=false; const t=gdTargetTab(); if(t!==null && ckTab!==3) ckTab=t;
     gdApply(); renderTabs(); renderView();
     body.querySelectorAll("[data-grade]").forEach(x=>x.setAttribute("aria-pressed", String(x===b)));
-    busy=true; timer=setTimeout(()=>show(startPos(),"fwd"), HOLD);
+    busy=true; timer=setTimeout(()=>show(steps().length ? "list" : "intro","fwd"), HOLD);
   }
 
   root.addEventListener("click", e=>{
     const b=e.target.closest("button"); if(!b) return;
-    if(b===backBtn) return back();
-    if(b===fwdBtn) return next();
+    if(b===backBtn) return show("intro","back");
     if(b.dataset.name!==undefined) return tap(b);
     if(b.dataset.grade) return pickGrade(+b.dataset.grade, b);
-    if(b.dataset.jump!==undefined){ fromReview=true; return show(+b.dataset.jump,"back"); }
+    if(b.dataset.edit!==undefined) return edit(+b.dataset.edit);
     const act=b.dataset.act;
-    if(act==="next") next();
-    else if(act==="edit") show(0,"back");
-    else if(act==="resume") show(startPos(),"back");
-    else if(act==="review") show("review","back");
+    if(act==="edit") window.scrollTo({top:0, behavior:smooth()});
+    else if(act==="review") show("list","back");
     else if(act==="submit") $("ckSubmit").click();                     // 기존 제출 창(학번·이름 → 검증 → 전송)
     else if(act==="school"){ const s=$("sbChange"); if(s) s.click(); }
     else if(act==="full") setOff(true);
   });
   /* 제출이 끝나면(기존 제출 창이 성공 표시) 완료 화면으로 */
   new MutationObserver(()=>{
-    if(pos==="review" && document.body.classList.contains("wz-on") && $("submitResult").classList.contains("ok")) timer=setTimeout(()=>show("done","fwd"), 1300);
+    if(pos==="list" && document.body.classList.contains("wz-on") && $("submitResult").classList.contains("ok")) timer=setTimeout(()=>show("done","fwd"), 1300);
   }).observe($("submitResult"), {attributes:true, attributeFilter:["class"]});
 
   /* 모바일 너비에서만 켜짐. '전체 화면으로 보기'를 누르면 기존 화면으로 */
   function apply(){
     const on=mq.matches && !off, was=document.body.classList.contains("wz-on");
     document.body.classList.toggle("wz-on", on);
-    if(on && !was) show(startPos());
+    if(on && !was) show(steps().length ? "list" : "intro");
     if(!on && was){ clearTimeout(timer); busy=false; window.dispatchEvent(new Event("resize")); }   // 숨겨졌던 상단 바 높이를 다시 계산
   }
   function setOff(v){
     off=v; try{ v ? localStorage.setItem(OFF_KEY,"1") : localStorage.removeItem(OFF_KEY); }catch(e){}
-    apply(); window.scrollTo(0,0);
+    apply(); window.scrollTo({top:0, behavior:"instant"});
   }
   $("wzEnter").addEventListener("click", ()=>setOff(false));
   mq.addEventListener("change", apply);
