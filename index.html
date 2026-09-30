@@ -1604,6 +1604,23 @@ body.locked .hd-search{visibility:hidden}               /* 학교 전용 주소�
 .wz-btn{flex:1;min-height:56px;border:2px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);font:inherit;font-size:17px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .wz-btn.primary{flex:1.6;border-color:var(--blue);background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(47,91,234,.3)}
 .wz-btn:active{transform:scale(.98)}
+/* 첫 화면(안내 + 시작하기) */
+#wz.home .wz-top{display:none}
+.wz-home{padding-top:6px}
+.wz-home-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px;font-size:15px}
+.wz-home-top b{font-weight:800}
+.wz-home-top span{color:var(--ink-soft)}
+.wz-home-ico{font-size:46px;line-height:1;margin-bottom:14px}
+.wz-home-school{display:inline-block;margin:0 0 12px;padding:5px 12px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:14px;font-weight:800}
+.wz-screen.wz-home h1{font-size:28px;line-height:1.32}
+.wz-how{list-style:none;margin:26px 0 30px;padding:0;display:flex;flex-direction:column;gap:18px}
+.wz-how li{display:flex;gap:14px;align-items:flex-start}
+.wz-how li>span{flex:none;width:34px;height:34px;border-radius:10px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:15px;font-weight:800}
+.wz-how b{display:block;font-size:17px;font-weight:800;line-height:1.35}
+.wz-how p{margin:3px 0 0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);word-break:keep-all}
+.wz-home .wz-btn{display:block;width:100%;margin-top:12px}
+.wz-btn.wz-start{min-height:62px;border-color:var(--ink);background:var(--ink);color:#fff;font-size:19px;box-shadow:0 10px 24px rgba(31,43,77,.25)}
+.wz-fine{margin:22px 0 0;text-align:center;font-size:13px;line-height:1.6;color:#9AA1B5}
 @media (prefers-reduced-motion:reduce){ .wz-screen.fwd,.wz-screen.back,.wz-opt.shake,.wz-sec.new{animation:none} .wz-opt,.wz-chk,.wz-track i{transition:none} }
 </style>
 </head>
@@ -3959,7 +3976,7 @@ document.getElementById("topBtn").addEventListener("click",e=>{
   /* 사이트 CSS가 html{scroll-behavior:smooth}라서, 바로 옮길 때는 "instant"를 명시해야 함 */
   const smooth = ()=>matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
   const HOLD=420;                       // 고른 표시를 보여 준 뒤 다음 묶음으로 넘어가기까지(ms)
-  let pos="intro";                      // "intro"(학년) | "list"(과목 선택) | "done"(제출 완료)
+  let pos="home";                       // "home"(첫 화면) | "intro"(학년) | "list"(과목 선택) | "done"(제출 완료)
   let busy=false, timer=0;
   let reached=0;                        // 이 번호의 묶음까지 화면에 보임
   let lastSig="";
@@ -3989,14 +4006,32 @@ document.getElementById("topBtn").addEventListener("click",e=>{
   }
 
   /* ── 화면 ── */
+  /* 첫 화면: 무엇을 하는 곳인지, 어떤 순서인지 알려 주고 [시작하기] */
+  function homeHTML(){
+    const resume = grade()!==null && steps().some(st=>selOf(st).length);      // 고르던 것이 있으면 이어서
+    const how = [
+      ["학년 선택", "지금 학년을 고르면 내년에 배울 선택과목이 나옵니다."],
+      ["과목 선택", "묶음마다 정해진 수만큼 과목을 누르면 다음 묶음이 열립니다. 위로 올려 언제든 바꿀 수 있어요."],
+      ["확인 후 제출", "고른 과목을 확인하고 학번과 이름을 적어 제출합니다."],
+    ];
+    return `<div class="wz-screen wz-home">
+      <div class="wz-home-top"><b>과목 선택 체크리스트</b><span>고교학점제</span></div>
+      <div class="wz-home-ico" aria-hidden="true">📚</div>
+      <p class="wz-home-school">${esc(school())}</p>
+      <h1 tabindex="-1">내년에 배울 선택과목,<br>지금 골라 볼까요?</h1>
+      <p class="wz-lead">우리 학교 교육과정 편성표에 있는 과목이 그대로 나옵니다.</p>
+      <ol class="wz-how">${how.map((x,i)=>`<li><span aria-hidden="true">${i+1}</span><div><b>${x[0]}</b><p>${x[1]}</p></div></li>`).join("")}</ol>
+      <button type="button" class="wz-btn wz-start" data-act="start">${resume?"이어서 선택하기":"시작하기"}</button>
+      ${LOCKED?"":`<button type="button" class="wz-btn wz-other" data-act="school">🏫 다른 학교 고르기</button>`}
+      <p class="wz-fine">고른 과목은 이 기기에 자동으로 저장됩니다.<br>편제표는 학교 사정에 따라 바뀔 수 있어요.</p></div>`;
+  }
   function introHTML(){
     const btn = g=>{
       const tg=CK_GRADES[g], has=!!tg && tg.semesters.some(s=>s.groups.length);
       return `<button type="button" class="wz-opt" data-grade="${g}" aria-pressed="${myGrade===g}" ${has?"":"disabled"}>${g}학년<small>${has?`${esc(tg.name)} 과목을 골라요`:"고를 과목이 없어요"}</small><span class="wz-chk" aria-hidden="true">✓</span></button>`;
     };
     return `<div class="wz-screen"><p class="wz-eyebrow">과목 선택</p><h1 tabindex="-1">${esc(school())}</h1><p class="wz-lead">지금 몇 학년인가요?</p>
-      <div class="wz-opts">${btn(1)}${btn(2)}</div>
-      ${LOCKED?"":`<div class="wz-links"><button type="button" data-act="school">다른 학교 고르기</button></div>`}</div>`;
+      <div class="wz-opts">${btn(1)}${btn(2)}</div></div>`;
   }
   /* 묶음 하나: 과목 버튼은 늘 다 보이고, 다 고르면(done) 고르지 않은 과목이 흐려짐 */
   function secHTML(st, i, fresh){
@@ -4033,14 +4068,15 @@ document.getElementById("topBtn").addEventListener("click",e=>{
   /* 상단: 이전(학년 선택으로) · 다 고른 묶음 수 · 진행 막대 */
   function header(){
     const list=steps(), n=list.length, d=list.filter(isDone).length;
-    backBtn.style.visibility = pos==="list" ? "visible" : "hidden";
+    root.classList.toggle("home", pos==="home");
+    backBtn.style.visibility = (pos==="list"||pos==="intro") ? "visible" : "hidden";
     $("wzStep").innerHTML = pos==="list" ? `<b>${d}</b> / ${n}` : pos==="done" ? "제출 완료" : "";
     $("wzFill").style.width = (pos==="list" ? (n ? d/n*100 : 0) : pos==="done" ? 100 : 0) + "%";
     $("wzFill").parentNode.style.visibility = pos==="intro" ? "hidden" : "visible";
   }
   /* 화면을 새로 그림. fresh = 방금 새로 열린 묶음 번호(아래에서 올라오는 효과) */
   function draw(fresh){
-    body.innerHTML = pos==="list" ? listHTML(fresh) : pos==="done" ? doneHTML() : introHTML();
+    body.innerHTML = pos==="list" ? listHTML(fresh) : pos==="done" ? doneHTML() : pos==="intro" ? introHTML() : homeHTML();
     const a=actionsHTML(); actions.innerHTML=a; actions.hidden=!a;
     header(); lastSig=sig();
   }
@@ -4115,11 +4151,12 @@ document.getElementById("topBtn").addEventListener("click",e=>{
 
   root.addEventListener("click", e=>{
     const b=e.target.closest("button"); if(!b) return;
-    if(b===backBtn) return show("intro","back");
+    if(b===backBtn) return show(pos==="list" ? "intro" : "home","back");
     if(b.dataset.name!==undefined) return tap(b);
     if(b.dataset.grade) return pickGrade(+b.dataset.grade, b);
     const act=b.dataset.act;
-    if(act==="edit") window.scrollTo({top:0, behavior:smooth()});
+    if(act==="start") show(grade()!==null && steps().some(st=>selOf(st).length) ? "list" : "intro","fwd");   // 고르던 것이 있으면 바로 이어서
+    else if(act==="edit") window.scrollTo({top:0, behavior:smooth()});
     else if(act==="review") show("list","back");
     else if(act==="submit") $("ckSubmit").click();                     // 기존 제출 창(학번·이름 → 검증 → 전송)
     else if(act==="school"){ const s=$("sbChange"); if(s) s.click(); }
@@ -4133,7 +4170,7 @@ document.getElementById("topBtn").addEventListener("click",e=>{
   function apply(){
     const on=mq.matches, was=document.body.classList.contains("wz-on");
     document.body.classList.toggle("wz-on", on);
-    if(on && !was) show(steps().length ? "list" : "intro");
+    if(on && !was) show("home");
     if(!on && was){ clearTimeout(timer); busy=false; window.dispatchEvent(new Event("resize")); }   // 숨겨졌던 상단 바 높이를 다시 계산
   }
   mq.addEventListener("change", apply);
