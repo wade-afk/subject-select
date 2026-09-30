@@ -1513,6 +1513,72 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 .topbar-inner{justify-content:flex-start}
 .hdr-actions{margin-left:auto!important}
 @media(max-width:600px){ .hdr-actions .gs-btn{padding:8px 11px} body.bd-compact .hdr-actions .gs-btn span{display:none} }
+
+/* ===== 모바일 단계별 선택 (화면 너비 768px 이하) =====
+   한 화면에 선택 묶음 하나 → 과목을 누르면 체크 → 다음 묶음으로 자동 이동 → 마지막에 확인 후 제출 */
+#wz,.wz-enter{display:none}
+@media (max-width:768px){
+  .wz-enter{display:block;padding:12px 16px 0}
+  .wz-enter button{width:100%;min-height:48px;border:1.5px solid var(--blue);border-radius:14px;background:var(--blue-soft);color:var(--blue);font:inherit;font-size:15px;font-weight:800;cursor:pointer}
+  body.wz-on{background:#F4F6FB}
+  body.wz-on .top-sticky,body.wz-on #page-checklist,body.wz-on footer,body.wz-on .top-link{display:none!important}
+  body.wz-on #wz{display:flex}
+}
+#wz{flex-direction:column;min-height:100vh;min-height:100dvh;color:var(--ink);line-height:1.5}
+.wz-top{position:sticky;top:0;z-index:30;background:rgba(244,246,251,.94);backdrop-filter:blur(8px);padding:6px 8px 10px}
+.wz-top-row{display:flex;align-items:center;height:44px}
+.wz-back,.wz-fwd{flex:none;min-width:64px;height:44px;border:0;background:none;font:inherit;font-weight:700;color:var(--ink-soft);border-radius:12px;padding:0 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wz-back{text-align:left;font-size:30px;line-height:1}
+.wz-fwd{text-align:right;font-size:15px;color:var(--blue)}
+.wz-step{flex:1;text-align:center;font-size:14px;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.wz-step b{font-size:17px;color:var(--ink)}
+.wz-track{height:5px;margin:2px 12px 0;border-radius:3px;background:#DDE2EE;overflow:hidden}
+.wz-track i{display:block;height:100%;width:0;border-radius:3px;background:var(--blue);transition:width .3s ease}
+.wz-body{flex:1;padding:18px 20px calc(36px + env(safe-area-inset-bottom));overflow-x:hidden}
+.wz-screen{max-width:520px;margin:0 auto}
+.wz-screen.fwd{animation:wzInR .24s ease both}
+.wz-screen.back{animation:wzInL .24s ease both}
+@keyframes wzInR{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes wzInL{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+.wz-eyebrow{margin:0 0 6px;font-size:14px;font-weight:800;color:var(--blue)}
+.wz-eyebrow span{color:var(--ink-soft);font-weight:600}
+.wz-screen h1,.wz-screen h2{margin:0;font-family:inherit;font-size:24px;font-weight:800;line-height:1.35;letter-spacing:-.02em;word-break:keep-all;outline:0}
+.wz-lead{margin:8px 0 0;font-size:16px;color:var(--ink-soft)}
+.wz-count{margin:10px 0 0;font-size:15px;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.wz-count b{color:var(--blue)}
+.wz-note{margin:14px 0 0;padding:12px 14px;border-radius:14px;background:var(--bd-amber-bg);color:var(--bd-amber-ink);font-size:14px;font-weight:600}
+
+/* 과목 버튼: 크게, 과목명만, 고르면 색이 바뀌고 체크 */
+.wz-opts{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.wz-opt{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:64px;padding:14px 52px;border:2px solid var(--line);border-radius:18px;background:#fff;color:var(--ink);font:inherit;font-size:18px;font-weight:700;line-height:1.35;text-align:center;word-break:keep-all;cursor:pointer;box-shadow:0 1px 2px rgba(31,43,77,.06);transition:background .15s,border-color .15s,color .15s,box-shadow .15s,transform .1s;-webkit-tap-highlight-color:transparent}
+.wz-opt:active{transform:scale(.98)}
+.wz-opt:focus-visible,.wz-card:focus-visible,.wz-btn:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.wz-opt small{margin-top:2px;font-size:13.5px;font-weight:500;color:var(--ink-soft)}
+.wz-chk{position:absolute;right:16px;top:50%;width:28px;height:28px;margin-top:-14px;border-radius:50%;background:#fff;color:var(--blue);display:grid;place-items:center;font-size:16px;font-weight:900;line-height:1;opacity:0;transform:scale(.4);transition:opacity .18s,transform .18s}
+.wz-opt[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(47,91,234,.3)}
+.wz-opt[aria-pressed="true"] small{color:#DCE5FF}
+.wz-opt[aria-pressed="true"] .wz-chk{opacity:1;transform:none}
+.wz-opt:disabled{opacity:.4;box-shadow:none;cursor:default}
+.wz-opt.shake{animation:wzShake .3s}
+@keyframes wzShake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* 확인 화면 */
+.wz-sem{margin:22px 0 8px;font-size:13.5px;font-weight:800;color:var(--ink-soft)}
+.wz-card{position:relative;display:block;width:100%;margin-bottom:10px;padding:14px 56px 14px 16px;border:1.5px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wz-card small{display:block;margin-bottom:3px;font-size:13px;font-weight:600;color:var(--ink-soft)}
+.wz-card b{display:block;font-size:17px;font-weight:700;line-height:1.45;word-break:keep-all}
+.wz-card i{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;font-size:13px;font-weight:700;color:var(--blue)}
+.wz-card.miss{border-color:#E9A5A5;background:#FFF5F5}
+.wz-card.miss b{color:var(--bd-todo)}
+.wz-done-mark{width:64px;height:64px;margin:12px 0 18px;border-radius:50%;background:#E3F6EC;color:var(--bd-ok);display:grid;place-items:center;font-size:32px;font-weight:900}
+.wz-links{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 8px;margin-top:26px}
+.wz-links button{min-height:44px;padding:0 12px;border:0;background:none;color:var(--ink-soft);font:inherit;font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.wz-actions{position:sticky;bottom:0;z-index:30;display:flex;gap:10px;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:rgba(244,246,251,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+.wz-actions[hidden]{display:none}
+.wz-btn{flex:1;min-height:56px;border:2px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);font:inherit;font-size:17px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wz-btn.primary{flex:1.6;border-color:var(--blue);background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(47,91,234,.3)}
+.wz-btn:active{transform:scale(.98)}
+@media (prefers-reduced-motion:reduce){ .wz-screen.fwd,.wz-screen.back,.wz-opt.shake{animation:none} .wz-opt,.wz-chk,.wz-track i{transition:none} }
 </style>
 </head>
 <body>
@@ -1540,6 +1606,20 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 </header>
 </div>
 
+<!-- =================== 모바일 단계별 선택 (768px 이하에서만 보임) =================== -->
+<div id="wz" aria-label="과목 선택">
+  <div class="wz-top">
+    <div class="wz-top-row">
+      <button type="button" class="wz-back" id="wzBack" aria-label="이전 단계">‹</button>
+      <div class="wz-step" id="wzStep" aria-live="polite"></div>
+      <button type="button" class="wz-fwd" id="wzFwd">다음 ›</button>
+    </div>
+    <div class="wz-track" aria-hidden="true"><i id="wzFill"></i></div>
+  </div>
+  <div class="wz-body" id="wzBody"></div>
+  <div class="wz-actions" id="wzActions" hidden></div>
+</div>
+
 <!-- ===== 과목 상세 팝업 ===== -->
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
@@ -1563,6 +1643,7 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 
 <!-- =================== 과목 선택 체크리스트 =================== -->
 <main id="page-checklist" class="page show">
+  <div class="wz-enter"><button type="button" id="wzEnter">📱 한 단계씩 고르기</button></div>
   <section class="ck-hero">
     <div class="wrap">
       <span class="eyebrow">MY CHOICE</span>
@@ -3797,6 +3878,191 @@ document.getElementById("topBtn").addEventListener("click",e=>{
 
   gdApply(); renderView();
   if(BOARD) setTimeout(scrollToTargetCol, 0);
+})();
+
+/* =====================================================================
+   모바일 단계별 선택 (화면 너비 768px 이하)
+   ─ 한 화면에 선택 묶음 하나: 과목을 누르면 체크 → 다음 묶음으로 자동 이동 → 마지막에 확인 후 제출
+   ─ 선택·검증·저장·제출은 기존 체크리스트 코드를 그대로 사용합니다.
+     (숨은 체크박스(data-sem/grp/name)로 change 이벤트를 보내 기존 핸들러가 처리)
+===================================================================== */
+(function ckWizard(){
+  const root=document.getElementById("wz"); if(!root || !ckView) return;
+  const $ = id => document.getElementById(id);
+  const esc = s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const body=$("wzBody"), actions=$("wzActions"), backBtn=$("wzBack"), fwdBtn=$("wzFwd");
+  const mq=matchMedia("(max-width: 768px)");
+  const OFF_KEY="jj_wz_off";            // '전체 화면으로 보기'를 고른 브라우저는 기존 화면으로 시작
+  const HOLD=420;                       // 고른 표시를 보여 준 뒤 다음으로 넘어가기까지(ms)
+  let off=false; try{ off=localStorage.getItem(OFF_KEY)==="1"; }catch(e){}
+  let pos="intro";                      // "intro" | 0…n-1 (선택 묶음) | "review" | "done"
+  let busy=false, timer=0, fromReview=false;
+
+  const school = ()=>($("cfgCkName")||{}).textContent || SITE.name || "우리 학교";
+  const grade = ()=>(myGrade===1||myGrade===2) && CK_GRADES[myGrade] ? myGrade : null;
+  /* 1학년 → 2학년 과목, 2학년 → 3학년 과목. 선택 묶음 하나가 한 단계 */
+  const steps = ()=>{ const g=grade(); return g===null ? [] : CK_GRADES[g].semesters.flatMap(sem=>sem.groups.map(grp=>({sem, g:grp}))); };
+  const selOf = st=>(ckState[st.sem.id]||{})[st.g.name]||[];
+  const isDone = st=>selOf(st).length>=st.g.pick;
+  const lockOf = st=>RULES_ON ? activeLock(st.sem.id, st.g.name) : null;
+  const title = g=>g.name.replace(/\s+\d+$/,"");
+  const startPos = ()=>{ const list=steps(); if(!list.length) return "intro"; const i=list.findIndex(st=>!isDone(st)); return i<0 ? "review" : i; };
+
+  /* 기존 체크박스 핸들러에 선택/해제를 맡김 → 택N·계열·위계·연계 규칙과 저장이 그대로 적용됨 */
+  function send(st, name, on){
+    const cb=document.createElement("input");
+    cb.type="checkbox"; cb.hidden=true; cb.checked=on;
+    cb.dataset.sem=st.sem.id; cb.dataset.grp=st.g.name; cb.dataset.name=name;
+    ckView.appendChild(cb);
+    cb.dispatchEvent(new Event("change",{bubbles:true}));
+    cb.remove();
+    return selOf(st).includes(name)===on;
+  }
+
+  /* ── 화면 ── */
+  function introHTML(){
+    const btn = g=>{
+      const tg=CK_GRADES[g], has=!!tg && tg.semesters.some(s=>s.groups.length);
+      return `<button type="button" class="wz-opt" data-grade="${g}" aria-pressed="${myGrade===g}" ${has?"":"disabled"}>${g}학년<small>${has?`${esc(tg.name)} 과목을 골라요`:"고를 과목이 없어요"}</small><span class="wz-chk" aria-hidden="true">✓</span></button>`;
+    };
+    return `<div class="wz-screen"><p class="wz-eyebrow">과목 선택</p><h1 tabindex="-1">${esc(school())}</h1><p class="wz-lead">지금 몇 학년인가요?</p>
+      <div class="wz-opts">${btn(1)}${btn(2)}</div>
+      <div class="wz-links">${LOCKED?"":`<button type="button" data-act="school">다른 학교 고르기</button>`}<button type="button" data-act="full">전체 화면으로 보기</button></div></div>`;
+  }
+  function stepHTML(st, i){
+    const g=st.g, lk=lockOf(st);
+    return `<div class="wz-screen"><p class="wz-eyebrow">선택 ${i+1} <span>· ${esc(st.sem.name)}</span></p>
+      <h2 tabindex="-1">${esc(title(g))} 과목${g.pick>1?` ${g.pick}개를`:"을"} 선택하세요.</h2>
+      ${g.pick>1 && !lk ? `<p class="wz-count" id="wzCount"></p>` : ""}
+      ${lk ? `<p class="wz-note">🔒 ${esc(semName(lk.fromSem))}에서 '${esc(lk.fromSub)}'을(를) 골라서, 이 묶음은 '${esc(lk.toSub)}'(으)로 정해졌어요.</p>` : ""}
+      <div class="wz-opts">${g.options.map(o=>`<button type="button" class="wz-opt" data-name="${esc(o[0])}" aria-pressed="false" ${lk && o[0]!==lk.toSub?"disabled":""}>${esc(o[0])}<span class="wz-chk" aria-hidden="true">✓</span></button>`).join("")}</div></div>`;
+  }
+  function reviewHTML(){
+    const list=steps(), allDone=list.every(isDone);
+    let cards="", sem=null;
+    list.forEach((st,i)=>{
+      if(st.sem!==sem){ sem=st.sem; cards+=`<h3 class="wz-sem">${esc(sem.name)}</h3>`; }
+      const sel=selOf(st), ok=isDone(st);
+      cards+=`<button type="button" class="wz-card ${ok?"":"miss"}" data-jump="${i}"><small>${esc(title(st.g))}</small><b>${sel.length?esc(sel.join(", ")):"아직 고르지 않았어요"}</b><i>${ok?"수정":"선택"}</i></button>`;
+    });
+    return `<div class="wz-screen"><h2 tabindex="-1">${allDone?"과목 선택이 완료되었습니다.":"아직 고르지 않은 과목이 있어요."}</h2>
+      <p class="wz-lead">${allDone?"선택한 과목을 확인해 주세요.":"빨간 칸을 눌러 마저 골라 주세요."}</p>${cards}
+      <div class="wz-links"><button type="button" data-act="full">전체 화면으로 보기</button></div></div>`;
+  }
+  function doneHTML(){
+    return `<div class="wz-screen"><div class="wz-done-mark" aria-hidden="true">✓</div><h2 tabindex="-1">제출되었습니다.</h2>
+      <p class="wz-lead">${esc(school())}에 과목 선택 결과를 보냈어요. 바꾸고 싶으면 다시 고른 뒤 한 번 더 제출하세요.</p></div>`;
+  }
+  function actionsHTML(){
+    if(pos==="review") return steps().every(isDone)
+      ? `<button type="button" class="wz-btn" data-act="edit">선택 수정</button><button type="button" class="wz-btn primary" data-act="submit">최종 제출</button>`
+      : `<button type="button" class="wz-btn primary" data-act="resume">이어서 선택</button>`;
+    if(pos==="done") return `<button type="button" class="wz-btn" data-act="review">선택 다시 보기</button>`;
+    if(typeof pos==="number" && lockOf(steps()[pos])) return `<button type="button" class="wz-btn primary" data-act="next">다음</button>`;
+    return "";
+  }
+
+  /* 단계 이동: 화면을 새로 그리고 방향에 맞춰 슬라이드 (dir: "fwd" | "back") */
+  function show(p, dir){
+    clearTimeout(timer); busy=false; pos=p;
+    if(p==="review") fromReview=false;
+    const list=steps(), n=list.length, isStep=typeof p==="number";
+    backBtn.style.visibility = (p==="intro"||p==="done") ? "hidden" : "visible";
+    $("wzStep").innerHTML = isStep ? `<b>${p+1}</b> / ${n}` : p==="review" ? "선택 확인" : p==="done" ? "제출 완료" : "";
+    $("wzFill").style.width = (isStep ? (p+1)/n*100 : p==="intro" ? 0 : 100) + "%";
+    $("wzFill").parentNode.style.visibility = p==="intro" ? "hidden" : "visible";
+    body.innerHTML = isStep ? stepHTML(list[p], p) : p==="review" ? reviewHTML() : p==="done" ? doneHTML() : introHTML();
+    const a=actionsHTML(); actions.innerHTML=a; actions.hidden=!a;
+    paint();
+    window.scrollTo(0,0);
+    if(dir){ body.firstElementChild.classList.add(dir); const h=body.querySelector("h1,h2"); if(h) h.focus({preventScroll:true}); }
+  }
+  /* 지금 단계의 선택 상태만 다시 칠함 (버튼 색·체크, 개수, '다음') */
+  function paint(){
+    const st=typeof pos==="number" ? steps()[pos] : null;
+    fwdBtn.style.visibility = st && isDone(st) && !busy ? "visible" : "hidden";
+    if(!st) return;
+    const sel=selOf(st), lk=lockOf(st);
+    body.querySelectorAll(".wz-opt[data-name]").forEach(b=>b.setAttribute("aria-pressed", String(lk ? b.dataset.name===lk.toSub : sel.includes(b.dataset.name))));
+    const c=$("wzCount"); if(c) c.innerHTML=`<b>${sel.length}</b> / ${st.g.pick}과목 선택`;
+  }
+  function next(){
+    if(fromReview || typeof pos!=="number" || pos+1>=steps().length) return show("review","fwd");
+    show(pos+1,"fwd");
+  }
+  function back(){
+    fromReview=false;
+    if(pos==="review"){ const n=steps().length; return show(n ? n-1 : "intro","back"); }
+    if(typeof pos==="number") show(pos>0 ? pos-1 : "intro","back");
+  }
+  /* 고른 표시를 잠깐 보여 준 뒤 다음 단계로. 기존 안내 팝업이 떠 있으면 닫힌 뒤에 넘어감 */
+  function advanceSoon(){
+    busy=true; paint();
+    const go=()=>{ timer=setTimeout(next, HOLD); };
+    if(!caOverlay.classList.contains("open")) return go();
+    const ob=new MutationObserver(()=>{ if(caOverlay.classList.contains("open")) return; ob.disconnect(); if(busy) go(); });
+    ob.observe(caOverlay,{attributes:true,attributeFilter:["class"]});
+  }
+
+  function tap(b){
+    if(busy) return;
+    const st=steps()[pos], name=b.dataset.name, sel=selOf(st);
+    if(lockOf(st)) return;
+    if(sel.includes(name)){ send(st,name,false); paint(); return; }          // 다시 누르면 해제
+    if(st.g.pick===1 && sel.length) send(st, sel[0], false);                  // 하나만 고르는 묶음은 바꿔 고르기
+    else if(sel.length>=st.g.pick){
+      b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
+      showToast(`${st.g.pick}과목까지 고를 수 있어요. 고른 과목을 눌러 해제한 뒤 다시 고르세요.`);
+      return;
+    }
+    const ok=send(st,name,true);          // 규칙에 걸리면 기존 안내 팝업이 뜨고 선택되지 않음
+    paint();
+    if(ok && isDone(st)) advanceSoon();
+  }
+  function pickGrade(g, b){
+    if(busy) return;
+    myGrade=g; try{ localStorage.setItem(GD_KEY, myGrade); }catch(e){}
+    gdShowAll=false; const t=gdTargetTab(); if(t!==null && ckTab!==3) ckTab=t;
+    gdApply(); renderTabs(); renderView();
+    body.querySelectorAll("[data-grade]").forEach(x=>x.setAttribute("aria-pressed", String(x===b)));
+    busy=true; timer=setTimeout(()=>show(startPos(),"fwd"), HOLD);
+  }
+
+  root.addEventListener("click", e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    if(b===backBtn) return back();
+    if(b===fwdBtn) return next();
+    if(b.dataset.name!==undefined) return tap(b);
+    if(b.dataset.grade) return pickGrade(+b.dataset.grade, b);
+    if(b.dataset.jump!==undefined){ fromReview=true; return show(+b.dataset.jump,"back"); }
+    const act=b.dataset.act;
+    if(act==="next") next();
+    else if(act==="edit") show(0,"back");
+    else if(act==="resume") show(startPos(),"back");
+    else if(act==="review") show("review","back");
+    else if(act==="submit") $("ckSubmit").click();                     // 기존 제출 창(학번·이름 → 검증 → 전송)
+    else if(act==="school"){ const s=$("sbChange"); if(s) s.click(); }
+    else if(act==="full") setOff(true);
+  });
+  /* 제출이 끝나면(기존 제출 창이 성공 표시) 완료 화면으로 */
+  new MutationObserver(()=>{
+    if(pos==="review" && document.body.classList.contains("wz-on") && $("submitResult").classList.contains("ok")) timer=setTimeout(()=>show("done","fwd"), 1300);
+  }).observe($("submitResult"), {attributes:true, attributeFilter:["class"]});
+
+  /* 모바일 너비에서만 켜짐. '전체 화면으로 보기'를 누르면 기존 화면으로 */
+  function apply(){
+    const on=mq.matches && !off, was=document.body.classList.contains("wz-on");
+    document.body.classList.toggle("wz-on", on);
+    if(on && !was) show(startPos());
+    if(!on && was){ clearTimeout(timer); busy=false; window.dispatchEvent(new Event("resize")); }   // 숨겨졌던 상단 바 높이를 다시 계산
+  }
+  function setOff(v){
+    off=v; try{ v ? localStorage.setItem(OFF_KEY,"1") : localStorage.removeItem(OFF_KEY); }catch(e){}
+    apply(); window.scrollTo(0,0);
+  }
+  $("wzEnter").addEventListener("click", ()=>setOff(false));
+  mq.addEventListener("change", apply);
+  apply();
 })();
 
 </script>
