@@ -1510,14 +1510,14 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 }
 
 /* ── 단독 페이지 상단: 학교 이름(왼쪽, '나의 정보' 위) · 더 알아보기 · 다른 학교 검색(가운데 길게) ── */
-.topbar-inner,body.bd-compact .topbar-inner{max-width:1720px;padding:0 24px;justify-content:flex-start;gap:16px}
-@media(min-width:1101px){ .topbar-inner>.brand{flex:0 0 260px} }
-@media(min-width:1280px){ .topbar-inner>.brand{flex-basis:288px} }     /* 학교 이름 칸 = 아래 '나의 정보' 칸 너비 */
+.topbar-inner,body.bd-compact .topbar-inner{display:grid;grid-template-columns:minmax(max-content,1fr) minmax(220px,720px) minmax(max-content,1fr);align-items:center;gap:16px;max-width:1720px;padding:0 24px}
+.topbar-inner>.brand{justify-self:start}
+.hd-more{justify-self:end}
 .bd-viewtoggle,.bd-hdr{display:none!important}          /* 학년별 보기는 없앰 — PC는 한눈에 보기만 */
 .hd-more{flex:none;font:inherit;font-size:13.5px;font-weight:800;color:var(--ink);background:var(--yellow);border:0;border-radius:999px;padding:10px 16px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(255,210,63,.35)}
 .hd-more span{font-weight:500}
 .hd-more:hover{filter:brightness(.96)}
-.hd-search{position:relative;flex:1 1 auto;min-width:0;max-width:720px;margin:0 auto}
+.hd-search{position:relative;min-width:0;width:100%}
 .hd-search::before{content:"🔍";position:absolute;left:17px;top:50%;transform:translateY(-50%);font-size:16px;line-height:1;pointer-events:none}
 .hd-search input{width:100%;height:46px;padding:0 18px 0 46px;border:2px solid var(--blue);border-radius:999px;background:#fff;color:var(--ink);font:inherit;font-size:15px;font-weight:600;outline:0;box-shadow:0 4px 14px rgba(47,91,234,.14)}
 .hd-search input::placeholder{color:#A6ADC0;font-weight:500}
@@ -1532,6 +1532,8 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 .hd-found .hd-all{margin-top:4px;border-top:1px solid var(--line);border-radius:0 0 10px 10px;color:var(--blue);font-size:14px}
 body.locked .hd-search{visibility:hidden}               /* 학교 전용 주소에서는 학교를 바꿀 수 없음 */
 .ck-help{scroll-margin-top:calc(var(--bd-top,64px) + 16px)}
+.ck-help-sec{padding:0 0 48px}                          /* '더 알아보기' 안내는 하단 바(학점·제출 버튼) 아래 */
+.ck-help-sec .ck-help{margin-top:28px;padding-top:0;border-top:0}
 @media(max-width:1180px){ .hd-more span{display:none} }
 
 /* ===== 모바일 단계별 선택 (화면 너비 768px 이하) =====
@@ -1623,11 +1625,11 @@ body.locked .hd-search{visibility:hidden}               /* 학교 전용 주소�
       <span class="brand-mark" id="cfgMark">작</span>
       <span class="brand-text"><span id="cfgName">작전고등학교</span><small id="cfgSub">과목 선택 체크리스트</small></span>
     </a>
-    <button type="button" class="hd-more" id="hdMore"><span>과목 선택이 어렵다면? </span>더 알아보기</button>
     <div class="hd-search" id="hdSearch" role="search">
       <input type="search" id="hdSchoolInput" placeholder="다른 학교 찾기 — 예) 효성고등학교" autocomplete="off" aria-label="다른 학교 검색">
       <div class="hd-found" id="hdFound" hidden></div>
     </div>
+    <button type="button" class="hd-more" id="hdMore"><span>과목 선택이 어렵다면? </span>더 알아보기</button>
   </div>
 </header>
 </div>
@@ -1698,17 +1700,6 @@ body.locked .hd-search{visibility:hidden}               /* 학교 전용 주소�
       <div id="ckView"><!-- JS 렌더링: 학년 카드 또는 졸업요건 --></div>
       <p class="ck-note">✏️ 선택 내용은 이 브라우저에 자동 저장됩니다. 편제표는 학교 사정에 따라 변경될 수 있으니 담임·교육과정 담당 선생님의 안내를 따르세요.</p>
 
-      <div class="ck-help">
-        <h3>선택이 어렵다면 — 더 알아보기</h3>
-        <div class="ck-help-grid">
-          <a href="https://wade-afk.github.io/2026-curriculum-fair/#guide" data-fair="guide" target="_blank" rel="noopener"><b>📖 교과(군)별 과목 안내</b><span>과목마다 무엇을 배우는지, 성적은 어떻게 나오는지</span></a>
-          <a href="https://wade-afk.github.io/2026-curriculum-fair/#univ" data-fair="univ" target="_blank" rel="noopener"><b>🎓 대학별 권장과목</b><span>가고 싶은 대학·학과가 반영하는 과목</span></a>
-          <a href="https://wade-afk.github.io/2026-curriculum-fair/#field" data-fair="field" target="_blank" rel="noopener"><b>🧭 계열별 권장과목</b><span>계열별로 어떤 과목을 들어야 하는지 한눈에</span></a>
-          <a href="https://wade-afk.github.io/2026-curriculum-fair/#video" data-fair="video" target="_blank" rel="noopener"><b>▶ 선택과목 길라잡이 영상</b><span>과목별 안내 영상 모음</span></a>
-          <a href="https://wade-afk.github.io/2026-curriculum-fair/#what" data-fair="what" target="_blank" rel="noopener"><b>📘 고교학점제란?</b><span>학점·이수 기준·졸업 요건 등 기본 개념</span></a>
-          <a href="https://wade-afk.github.io/2026-curriculum-fair/#adm" data-fair="adm" target="_blank" rel="noopener"><b>🏛 2028 대입</b><span>새 입시 제도와 성적 산출 방식</span></a>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -1726,6 +1717,22 @@ body.locked .hd-search{visibility:hidden}               /* 학교 전용 주소�
       </div>
     </div>
   </div>
+
+  <section class="ck-help-sec">
+    <div class="wrap">
+      <div class="ck-help">
+        <h3>선택이 어렵다면 — 더 알아보기</h3>
+        <div class="ck-help-grid">
+          <a href="https://wade-afk.github.io/2026-curriculum-fair/#guide" data-fair="guide" target="_blank" rel="noopener"><b>📖 교과(군)별 과목 안내</b><span>과목마다 무엇을 배우는지, 성적은 어떻게 나오는지</span></a>
+          <a href="https://wade-afk.github.io/2026-curriculum-fair/#univ" data-fair="univ" target="_blank" rel="noopener"><b>🎓 대학별 권장과목</b><span>가고 싶은 대학·학과가 반영하는 과목</span></a>
+          <a href="https://wade-afk.github.io/2026-curriculum-fair/#field" data-fair="field" target="_blank" rel="noopener"><b>🧭 계열별 권장과목</b><span>계열별로 어떤 과목을 들어야 하는지 한눈에</span></a>
+          <a href="https://wade-afk.github.io/2026-curriculum-fair/#video" data-fair="video" target="_blank" rel="noopener"><b>▶ 선택과목 길라잡이 영상</b><span>과목별 안내 영상 모음</span></a>
+          <a href="https://wade-afk.github.io/2026-curriculum-fair/#what" data-fair="what" target="_blank" rel="noopener"><b>📘 고교학점제란?</b><span>학점·이수 기준·졸업 요건 등 기본 개념</span></a>
+          <a href="https://wade-afk.github.io/2026-curriculum-fair/#adm" data-fair="adm" target="_blank" rel="noopener"><b>🏛 2028 대입</b><span>새 입시 제도와 성적 산출 방식</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <!-- ===== 결과 제출 모달 ===== -->
