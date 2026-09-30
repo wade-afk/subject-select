@@ -1727,6 +1727,11 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
         지금 보고 있는 학교가 맞다면 아래 버튼으로 이동한 뒤 다시 제출해 주세요. 선택 내용은 그대로 유지됩니다.</p>
         <a class="btn btn-submit btn-full" id="gateGo" href="#">🏫 <span id="gateSchool">우리 학교</span> 전용 페이지로 이동</a>
       </div>
+      <div class="sgate" id="submitNeed" style="display:none">
+        <b id="needTitle">🔒 아직 결과 수집이 승인되지 않은 학교예요.</b>
+        <p id="needText"></p>
+        <button type="button" class="btn btn-pro btn-full" id="submitApply"><span class="pro-tag">PRO</span> 결과 수집 연결 신청하기</button>
+      </div>
       <div id="submitForm">
       <div class="sfield">
         <label for="sId">학번 (5자리 · 예: 10315 = 1학년 3반 15번)</label>
@@ -2061,6 +2066,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape" && overlay.classLis
 /* 제출 주소: ① 운영자 접수(승인된 학교, 작전고 포함) ② 학교 자체 앱스크립트 ③ 접수 대행(sheetId)
    — 셋 다 없으면 빈 값 → 제출 차단 + [결과 수집 신청] 안내 (승인 없는 무단 수합 방지) */
 const OPERATOR_URL = (function(){ try{ return (JSON.parse(localStorage.getItem("jj_operator_url"))||""); }catch(e){ return ""; } })() || "https://script.google.com/macros/s/AKfycbw4qPV2TOzy8bcjiLn_LxLQS8miCY0EmacuRdksmw6vi_kxm807v66SuslGrJxjpNCYAw/exec";
+let COLLECT_CHECKED = false;   // 승인 여부 조회를 한 번이라도 마쳤는지
 let COLLECT_OK = false;   // 운영자 접수 승인 여부 (schools.json operatorUrl에 ?action=list로 조회)
 let COLLECT_ERR = "";     // 승인 조회 실패 사유
 let COLLECT_VER = 0;      // 운영자 스크립트(배포된 웹 앱) 버전
@@ -2686,29 +2692,49 @@ function renderSubmitLink(){
   if(url && COLLECT_OK && OPERATOR_URL && COLLECT_VER < NEED_SCRIPT_VER){
     el.className="slink err"; el.textContent = `⚠ 운영자 스크립트 배포가 옛 버전(v${COLLECT_VER||"?"})이에요. Apps Script에서 [배포 관리 → ✏ → 새 버전 → 배포]를 하면 새 시트 서식으로 기록됩니다. (제출은 됩니다)`; return;
   }
-  if(url){ el.className="slink ok"; el.textContent = (COLLECT_OK && OPERATOR_URL) ? `🔗 제출 연결: 운영자 접수 (승인됨 · 스크립트 v${COLLECT_VER})` : (SITE.submitUrl ? "🔗 제출 연결: 학교 자체 시트" : (SITE.sheetId ? "🔗 제출 연결: 학교 시트(접수 대행)" : "🔗 제출 연결: 기본 시트")); }
-  else { el.className="slink err"; el.textContent = "⚠ 이 학교는 아직 결과 수집이 연결되지 않았어요. 담당 선생님이 [결과 수집 신청]을 해 주세요." + (COLLECT_ERR ? " ("+COLLECT_ERR+")" : ""); }
+  if(url){ el.className="slink ok"; el.textContent = (COLLECT_OK && OPERATOR_URL) ? `✅ PRO 결과 수집 승인됨` : (SITE.submitUrl ? "🔗 제출 연결: 학교 자체 시트" : (SITE.sheetId ? "🔗 제출 연결: 학교 시트(접수 대행)" : "🔗 제출 연결: 기본 시트")); }
+  else { el.className="slink err"; el.textContent = COLLECT_ERR ? "⚠ 결과 수집 승인 여부를 확인하지 못했어요. ("+COLLECT_ERR+")" : "⚠ 이 학교는 아직 결과 수집이 승인되지 않았어요."; }
 }
 function lockedUrl(){
   const id = SITE.schoolId || "jakjeon";
   const u = new URL(location.href); u.search=""; u.searchParams.set("school", id); u.searchParams.set("lock","1"); u.hash="";
   return u.toString();
 }
+/* 제출 창에 보여 줄 칸을 승인 여부에 따라 정함
+   승인 전 → 결과 수집 신청 안내 / 승인 + 전용 주소 아님 → 전용 페이지로 이동 / 승인 + 전용 주소 → 학번·이름 입력 */
+function renderSubmitState(checking){
+  const $ = id => document.getElementById(id);
+  const ok = !!ckSubmitUrl(), needLock = SUBMIT_REQUIRES_LOCK && !LOCKED;
+  $("submitNeed").style.display = !checking && !ok ? "block" : "none";
+  $("submitGate").style.display = !checking && ok && needLock ? "block" : "none";
+  $("submitForm").style.display = !checking && ok && !needLock ? "" : "none";
+  if(checking){ const el=$("submitLink"); el.className="slink"; el.textContent="🔄 결과 수집 승인 여부 확인 중…"; return; }
+  renderSubmitLink();
+  if(!ok){
+    const err = !!COLLECT_ERR;
+    $("needTitle").textContent = err ? "⚠ 승인 여부를 확인하지 못했어요." : "🔒 아직 결과 수집이 승인되지 않은 학교예요.";
+    $("needText").textContent = err ? "인터넷 연결을 확인하고 다시 시도해 주세요. 선택 내용은 그대로 유지됩니다."
+      : "결과를 받을 구글 시트가 아직 연결되지 않아 제출할 수 없어요. 담당 선생님이 결과 수집을 신청해 승인되면 제출할 수 있습니다. 선택 내용은 그대로 유지됩니다.";
+    $("submitApply").innerHTML = err ? "다시 확인" : '<span class="pro-tag">PRO</span> 결과 수집 연결 신청하기';
+  }else if(needLock){
+    $("gateGo").href = lockedUrl(); $("gateSchool").textContent = SITE.name||"우리 학교";
+  }
+}
 document.getElementById("ckSubmit").addEventListener("click",()=>{
   { const n=document.getElementById("submitSchoolName"); if(n) n.textContent = SITE.name || "작전고등학교"; }
-  const gate=document.getElementById("submitGate"), form=document.getElementById("submitForm");
-  const blocked = SUBMIT_REQUIRES_LOCK && !LOCKED;
-  if(gate) gate.style.display = blocked ? "block" : "none";
-  if(form) form.style.display = blocked ? "none" : "";
-  if(blocked){ const a=document.getElementById("gateGo"); if(a) a.href=lockedUrl(); const g=document.getElementById("gateSchool"); if(g) g.textContent=SITE.name||"우리 학교"; }
-  const el=document.getElementById("submitLink"); if(el){ el.className="slink"; el.textContent="🔄 제출 연결 확인 중…"; }
-  checkCollect(renderSubmitLink);
+  renderSubmitState(!COLLECT_CHECKED);                 // 조회한 적이 있으면 그 결과로 먼저 보여 주고
+  checkCollect(()=>renderSubmitState(false));          // 열 때마다 다시 조회해 반영
   sWarn.classList.add("show");
   sWarn.textContent = "📋 수요조사 안내: 현재 1학년은 [2학년] 탭, 현재 2학년은 [3학년] 탭의 선택과목만 선택하면 됩니다.";
   sResult.className = "sresult"; sResult.textContent="";
   sOverlay.classList.add("open");
   document.body.style.overflow="hidden";
-  document.getElementById("sId").focus();
+  if(document.getElementById("submitForm").style.display!=="none") document.getElementById("sId").focus();
+});
+/* 승인 전: 선생님용 결과 수집 신청 창으로 (조회에 실패했을 때는 다시 조회) */
+document.getElementById("submitApply").addEventListener("click",()=>{
+  if(COLLECT_ERR){ renderSubmitState(true); checkCollect(()=>renderSubmitState(false)); return; }
+  closeSubmit(); document.getElementById("ckRegister").click();
 });
 function closeSubmit(){ sOverlay.classList.remove("open"); document.body.style.overflow=""; }
 document.getElementById("submitClose").addEventListener("click",closeSubmit);
@@ -3184,20 +3210,20 @@ function updateSubmitUI(){
   r.disabled = !!(LOCKED && viaOperator);
   r.classList.toggle("static", !!(LOCKED && viaOperator));
   r.title = COLLECT_ERR ? COLLECT_ERR : "선생님용 · 결과 수집(Pro) 신청";
-  r.innerHTML = viaOperator ? '<span class="pro-tag">PRO</span> 결과 수집 연결됨'
-    : (COLLECT_ERR ? '<span class="pro-tag">PRO</span> 연결 확인 실패' : '<span class="pro-tag">PRO</span> 결과 수집 신청');
+  r.innerHTML = viaOperator ? '<span class="pro-tag">PRO</span> 결과 수집 승인됨'
+    : (COLLECT_ERR ? '<span class="pro-tag">PRO</span> 연결 확인 실패' : '<span class="pro-tag">PRO</span> 결과 수집 연결 신청하기');
 }
 /* 운영자 접수 승인 여부를 즉시 조회 (제출 창을 열 때도 다시 확인) */
 function checkCollect(cb){
   if(!OPERATOR_URL){ if(cb) cb(); return; }
   const id = SITE.schoolId || "jakjeon";
-  const done = j => { COLLECT_OK = !!(j && j.collect); COLLECT_ERR = (j&&j.error)||""; COLLECT_VER = (j&&j.version)||0; updateSubmitUI(); if(cb) cb(); };
+  const done = j => { COLLECT_CHECKED = true; COLLECT_OK = !!(j && j.collect); COLLECT_ERR = (j&&j.error)||""; COLLECT_VER = (j&&j.version)||0; updateSubmitUI(); if(cb) cb(); };
   const jsonp = () => {   // fetch가 막히면(CORS 등) <script> 방식으로 재시도
     const name = "__ckcb"+Date.now();
     const s = document.createElement("script");
     let finished=false;
     window[name] = j => { finished=true; delete window[name]; s.remove(); done(j); };
-    s.onerror = () => { if(finished) return; delete window[name]; s.remove(); COLLECT_ERR = "상태 조회 실패: 스크립트 주소에 접근할 수 없어요 (배포 액세스 '모든 사용자'인지, 주소가 최신인지 확인)"; updateSubmitUI(); if(cb) cb(); };
+    s.onerror = () => { if(finished) return; delete window[name]; s.remove(); COLLECT_CHECKED = true; COLLECT_ERR = "상태 조회 실패: 스크립트 주소에 접근할 수 없어요 (배포 액세스 '모든 사용자'인지, 주소가 최신인지 확인)"; updateSubmitUI(); if(cb) cb(); };
     s.src = OPERATOR_URL+"?action=status&school="+encodeURIComponent(id)+"&callback="+name+"&_="+Date.now();
     document.head.appendChild(s);
     setTimeout(()=>{ if(!finished && window[name]){ s.onerror(); } }, 12000);
