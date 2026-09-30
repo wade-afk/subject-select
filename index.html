@@ -1509,17 +1509,35 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
  nav.menu .nav-dropdown a{font-size:14px}.nav-dropdown small{font-size:11px}
 }
 
-/* ── 단독 페이지: 상단 메뉴가 없으므로 버튼을 오른쪽 끝에 붙임 ── */
-.topbar-inner{justify-content:flex-start}
-.hdr-actions{margin-left:auto!important}
-@media(max-width:600px){ .hdr-actions .gs-btn{padding:8px 11px} body.bd-compact .hdr-actions .gs-btn span{display:none} }
+/* ── 단독 페이지 상단: 학교 이름(왼쪽, '나의 정보' 위) · 더 알아보기 · 다른 학교 검색(가운데 길게) ── */
+.topbar-inner,body.bd-compact .topbar-inner{max-width:1720px;padding:0 24px;justify-content:flex-start;gap:16px}
+@media(min-width:1101px){ .topbar-inner>.brand{flex:0 0 260px} }
+@media(min-width:1280px){ .topbar-inner>.brand{flex-basis:288px} }     /* 학교 이름 칸 = 아래 '나의 정보' 칸 너비 */
+.bd-viewtoggle,.bd-hdr{display:none!important}          /* 학년별 보기는 없앰 — PC는 한눈에 보기만 */
+.hd-more{flex:none;font:inherit;font-size:13.5px;font-weight:800;color:var(--ink);background:var(--yellow);border:0;border-radius:999px;padding:10px 16px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(255,210,63,.35)}
+.hd-more span{font-weight:500}
+.hd-more:hover{filter:brightness(.96)}
+.hd-search{position:relative;flex:1 1 auto;min-width:0;max-width:720px;margin:0 auto}
+.hd-search::before{content:"🔍";position:absolute;left:17px;top:50%;transform:translateY(-50%);font-size:16px;line-height:1;pointer-events:none}
+.hd-search input{width:100%;height:46px;padding:0 18px 0 46px;border:2px solid var(--blue);border-radius:999px;background:#fff;color:var(--ink);font:inherit;font-size:15px;font-weight:600;outline:0;box-shadow:0 4px 14px rgba(47,91,234,.14)}
+.hd-search input::placeholder{color:#A6ADC0;font-weight:500}
+.hd-search input:focus{box-shadow:0 0 0 4px rgba(47,91,234,.2)}
+.hd-found{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:80;max-height:min(60vh,440px);overflow:auto;padding:6px;border:1.5px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 18px 40px rgba(31,43,77,.18)}
+.hd-found[hidden]{display:none}
+.hd-found button{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border:0;border-radius:10px;background:none;color:var(--ink);font:inherit;font-size:15px;font-weight:600;text-align:left;cursor:pointer}
+.hd-found button small{margin-left:auto;font-size:12.5px;font-weight:500;color:var(--ink-soft);white-space:nowrap}
+.hd-found button.on,.hd-found button:hover{background:var(--blue-soft)}
+.hd-found button[aria-disabled="true"]{color:#A6ADC0;background:none;cursor:default}
+.hd-found .hd-empty{margin:0;padding:12px 14px;font-size:14px;color:var(--ink-soft)}
+.hd-found .hd-all{margin-top:4px;border-top:1px solid var(--line);border-radius:0 0 10px 10px;color:var(--blue);font-size:14px}
+body.locked .hd-search{visibility:hidden}               /* 학교 전용 주소에서는 학교를 바꿀 수 없음 */
+.ck-help{scroll-margin-top:calc(var(--bd-top,64px) + 16px)}
+@media(max-width:1180px){ .hd-more span{display:none} }
 
 /* ===== 모바일 단계별 선택 (화면 너비 768px 이하) =====
    세로로 이어지는 화면: 스크롤해 내려가며 묶음마다 과목을 고름. 다 고른 묶음은 고른 과목만 또렷하고 나머지는 흐리게 → 마지막에 확인 후 제출 */
-#wz,.wz-enter{display:none}
+#wz{display:none}
 @media (max-width:768px){
-  .wz-enter{display:block;padding:12px 16px 0}
-  .wz-enter button{width:100%;min-height:48px;border:1.5px solid var(--blue);border-radius:14px;background:var(--blue-soft);color:var(--blue);font:inherit;font-size:15px;font-weight:800;cursor:pointer}
   body.wz-on{background:#F4F6FB}
   body.wz-on .top-sticky,body.wz-on #page-checklist,body.wz-on footer,body.wz-on .top-link{display:none!important}
   body.wz-on #wz{display:flex}
@@ -1605,8 +1623,10 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
       <span class="brand-mark" id="cfgMark">작</span>
       <span class="brand-text"><span id="cfgName">작전고등학교</span><small id="cfgSub">과목 선택 체크리스트</small></span>
     </a>
-    <div class="hdr-actions">
-      <button class="gs-btn" id="gsBtn" title="과목 검색 (155개 과목)">🔍 <span>과목 검색</span></button>
+    <button type="button" class="hd-more" id="hdMore"><span>과목 선택이 어렵다면? </span>더 알아보기</button>
+    <div class="hd-search" id="hdSearch" role="search">
+      <input type="search" id="hdSchoolInput" placeholder="다른 학교 찾기 — 예) 효성고등학교" autocomplete="off" aria-label="다른 학교 검색">
+      <div class="hd-found" id="hdFound" hidden></div>
     </div>
   </div>
 </header>
@@ -1649,7 +1669,6 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
 
 <!-- =================== 과목 선택 체크리스트 =================== -->
 <main id="page-checklist" class="page show">
-  <div class="wz-enter"><button type="button" id="wzEnter">📱 한 단계씩 고르기</button></div>
   <section class="ck-hero">
     <div class="wrap">
       <span class="eyebrow">MY CHOICE</span>
@@ -1778,14 +1797,6 @@ nav.menu .nav-dropdown a{display:block;padding:12px 14px;font-size:14px;white-sp
     </div>
     <div class="ca-body" id="ckAlertBody"></div>
     <div class="ca-actions" id="ckAlertActions"></div>
-  </div>
-</div>
-
-<!-- 전역 과목 검색 -->
-<div class="gs-overlay" id="gsOverlay" role="dialog" aria-modal="true" aria-label="과목 검색">
-  <div class="gs-box">
-    <input id="gsInput" type="search" placeholder="과목명을 입력하세요 (예: 미적분, 생명과학)" autocomplete="off">
-    <div class="gs-list" id="gsList"></div>
   </div>
 </div>
 
@@ -2967,39 +2978,6 @@ function uvInit(){
 }
 renderCareerBar();
 
-/* ── 전역 과목 검색 ── */
-(function globalSearch(){
-  const ov=document.getElementById("gsOverlay"), inp=document.getElementById("gsInput"),
-        list=document.getElementById("gsList"), btn=document.getElementById("gsBtn");
-  if(!ov||!btn) return;
-  const IDX = Object.entries(SUBJECT_DATA).map(([key,d])=>({key, name:d.name, group:d.group, type:d.type}));
-  const CLS = {"공통":"common","일반":"general","진로":"career","융합":"fusion"};
-  function open(){ ov.classList.add("open"); document.body.style.overflow="hidden"; inp.value=""; render(""); setTimeout(()=>inp.focus(),30); }
-  function close(){ ov.classList.remove("open"); document.body.style.overflow=""; }
-  function render(q){
-    q=q.trim();
-    const hits = q ? IDX.filter(s=>s.name.includes(q)||s.group.includes(q)).slice(0,30) : [];
-    list.innerHTML = q
-      ? (hits.length ? hits.map((s,i)=>`
-          <button class="gs-item ${i===0?'sel':''}" data-k="${s.key}" data-t="${CLS[s.type]||'general'}">
-            <span class="mini-tag ${CLS[s.type]||'general'}">${s.type}</span><b>${s.name}</b><span class="gg">${s.group}</span>
-          </button>`).join("")
-        : `<p class="gs-empty">"${q}"에 해당하는 과목이 없어요.</p>`)
-      : `<p class="gs-empty">과목 이름이나 교과(군)으로 검색하세요. 총 ${IDX.length}개 과목의 상세 정보를 볼 수 있어요.</p>`;
-  }
-  btn.addEventListener("click",open);
-  inp.addEventListener("input",()=>render(inp.value));
-  inp.addEventListener("keydown",e=>{
-    if(e.key==="Enter"){ const f=list.querySelector(".gs-item"); if(f) f.click(); }
-    if(e.key==="Escape") close();
-  });
-  list.addEventListener("click",e=>{
-    const it=e.target.closest(".gs-item"); if(!it) return;
-    close(); openModal(it.dataset.k, it.dataset.t);
-  });
-  ov.addEventListener("click",e=>{ if(e.target===ov) close(); });
-})();
-
 /* ── 체크리스트 결과 이미지 저장 ── */
 document.getElementById("ckSaveImg").addEventListener("click",()=>{
   const btn=document.getElementById("ckSaveImg");
@@ -3160,7 +3138,7 @@ uvInit();
   fetch(DATA_BASE+"schools.json",{cache:"no-cache"}).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
     .catch(()=>{ usingFallback=true; return SCHOOLS_FALLBACK; })
     .then(j=>{
-      REG=j; crumb();
+      REG=j; window.__schoolList=j; crumb();
       { const f=findSchool(SCHOOL_ID); window.__schoolInfo = f ? {region:f.r.name, district:f.d.name} : {}; }
       if(window.__setOperatorUrl) window.__setOperatorUrl(j.operatorUrl||"");
       if(!LOCKED) $("sbChange").onclick=()=>open(); $("smClose").onclick=close;
@@ -3291,6 +3269,51 @@ function showToast(msg, ms){
   clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("show"), ms||3500);
 }
 
+/* ── 상단: 더 알아보기(아래 안내로 스크롤) · 다른 학교 검색 ── */
+(function headerTools(){
+  const $ = id => document.getElementById(id);
+  const input=$("hdSchoolInput"), box=$("hdFound"), more=$("hdMore");
+  if(more) more.addEventListener("click",()=>{ const el=document.querySelector(".ck-help"); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); });
+  if(!input || !box) return;
+  let hits=[], active=0;
+  const all = ()=>{ const j=window.__schoolList; return j ? j.regions.flatMap(r=>r.districts.flatMap(d=>d.schools.map(s=>({s,d})))) : []; };
+  function render(){
+    const q=input.value.trim().replace(/\s/g,"");
+    if(!q){ box.hidden=true; hits=[]; return; }
+    hits=all().filter(x=>(x.s.name+(x.s.short||"")).replace(/\s/g,"").includes(q)).slice(0,8);
+    active=Math.max(0, hits.findIndex(x=>!x.s.pending));
+    box.innerHTML=(hits.length
+      ? hits.map((x,i)=>`<button type="button" data-id="${x.s.id}" class="${i===active?"on":""}" ${x.s.pending?'aria-disabled="true"':""}>${esc(x.s.name)}<small>${esc(x.d.name)}${x.s.pending?" · 편성표 준비 중":x.s.id===SCHOOL_ID?" · 보는 중":""}</small></button>`).join("")
+      : `<p class="hd-empty">'${esc(input.value.trim())}' 학교를 찾지 못했어요.</p>`)
+      + `<button type="button" class="hd-all" data-all="1">지역 › 구·군에서 고르기</button>`;
+    box.hidden=false;
+  }
+  /* 학교를 고르면 그 학교 주소로 이동 → 기존 학교 선택기가 편성표를 불러옴 */
+  function go(id){
+    const x=hits.find(v=>v.s.id===id); if(!x || x.s.pending) return;
+    box.hidden=true; input.value="";
+    if(id===SCHOOL_ID) return;
+    const u=new URL(location.href); u.search=""; u.hash=""; u.searchParams.set("school", id);
+    location.assign(u.toString());
+  }
+  input.addEventListener("input", render);
+  input.addEventListener("focus", render);
+  input.addEventListener("keydown", e=>{
+    if(e.key==="Escape"){ box.hidden=true; input.blur(); }
+    else if(e.key==="Enter"){ e.preventDefault(); if(hits[active]) go(hits[active].s.id); }
+    else if((e.key==="ArrowDown"||e.key==="ArrowUp") && hits.length){
+      e.preventDefault(); active=(active+(e.key==="ArrowDown" ? 1 : hits.length-1))%hits.length;
+      box.querySelectorAll("[data-id]").forEach((b,i)=>b.classList.toggle("on", i===active));
+    }
+  });
+  box.addEventListener("click", e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    if(b.dataset.all){ box.hidden=true; const s=$("sbChange"); if(s) s.click(); return; }
+    go(b.dataset.id);
+  });
+  document.addEventListener("click", e=>{ if(!e.target.closest("#hdSearch")) box.hidden=true; });
+})();
+
 document.querySelectorAll("[data-fair]").forEach(a=>{ a.href = FAIR_BASE+"?school="+encodeURIComponent(SCHOOL_ID)+"#"+a.dataset.fair; });
 
 document.getElementById("topBtn").addEventListener("click",e=>{
@@ -3308,7 +3331,7 @@ document.getElementById("topBtn").addEventListener("click",e=>{
   const esc = s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   const NM = normName;
   const MODE_KEY = "jj_bd_mode_"+SCHOOL_ID, TGT_KEY = "jj_bd_target_"+SCHOOL_ID;
-  let BOARD = (()=>{ try{ return localStorage.getItem(MODE_KEY)!=="classic"; }catch(e){ return true; } })();
+  let BOARD = true;   // 학년별 보기는 없앰 — 항상 한눈에 보기(보드)
   let targets = (()=>{ try{ const v=JSON.parse(localStorage.getItem(TGT_KEY)||"[]"); return Array.isArray(v)?v.slice(0,2):[]; }catch(e){ return []; } })();
   const linkedTarget = admissionTarget();
   if(linkedTarget){
@@ -3928,9 +3951,7 @@ document.getElementById("topBtn").addEventListener("click",e=>{
   const mq=matchMedia("(max-width: 768px)");
   /* 사이트 CSS가 html{scroll-behavior:smooth}라서, 바로 옮길 때는 "instant"를 명시해야 함 */
   const smooth = ()=>matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth";
-  const OFF_KEY="jj_wz_off";            // '전체 화면으로 보기'를 고른 브라우저는 기존 화면으로 시작
   const HOLD=420;                       // 고른 표시를 보여 준 뒤 다음 묶음으로 넘어가기까지(ms)
-  let off=false; try{ off=localStorage.getItem(OFF_KEY)==="1"; }catch(e){}
   let pos="intro";                      // "intro"(학년) | "list"(과목 선택) | "done"(제출 완료)
   let busy=false, timer=0;
   let reached=0;                        // 이 번호의 묶음까지 화면에 보임
@@ -3968,7 +3989,7 @@ document.getElementById("topBtn").addEventListener("click",e=>{
     };
     return `<div class="wz-screen"><p class="wz-eyebrow">과목 선택</p><h1 tabindex="-1">${esc(school())}</h1><p class="wz-lead">지금 몇 학년인가요?</p>
       <div class="wz-opts">${btn(1)}${btn(2)}</div>
-      <div class="wz-links">${LOCKED?"":`<button type="button" data-act="school">다른 학교 고르기</button>`}<button type="button" data-act="full">전체 화면으로 보기</button></div></div>`;
+      ${LOCKED?"":`<div class="wz-links"><button type="button" data-act="school">다른 학교 고르기</button></div>`}</div>`;
   }
   /* 묶음 하나: 과목 버튼은 늘 다 보이고, 다 고르면(done) 고르지 않은 과목이 흐려짐 */
   function secHTML(st, i, fresh){
@@ -3989,8 +4010,7 @@ document.getElementById("topBtn").addEventListener("click",e=>{
       html+=secHTML(st, i, i===fresh);
     });
     if(fin) html+=`<div class="wz-finish" id="wzFinish"><h2 tabindex="-1">과목 선택이 완료되었습니다.</h2>
-      <p class="wz-lead">위로 올려 선택한 과목을 확인해 주세요. 바꾸려면 그 묶음에서 다른 과목을 누르면 됩니다.</p>
-      <div class="wz-links"><button type="button" data-act="full">전체 화면으로 보기</button></div></div>`;
+      <p class="wz-lead">위로 올려 선택한 과목을 확인해 주세요. 바꾸려면 그 묶음에서 다른 과목을 누르면 됩니다.</p></div>`;
     return `<div class="wz-screen wz-list ${fin?"":"more"}">${html}</div>`;
   }
   function doneHTML(){
@@ -4096,25 +4116,19 @@ document.getElementById("topBtn").addEventListener("click",e=>{
     else if(act==="review") show("list","back");
     else if(act==="submit") $("ckSubmit").click();                     // 기존 제출 창(학번·이름 → 검증 → 전송)
     else if(act==="school"){ const s=$("sbChange"); if(s) s.click(); }
-    else if(act==="full") setOff(true);
   });
   /* 제출이 끝나면(기존 제출 창이 성공 표시) 완료 화면으로 */
   new MutationObserver(()=>{
     if(pos==="list" && document.body.classList.contains("wz-on") && $("submitResult").classList.contains("ok")) timer=setTimeout(()=>show("done","fwd"), 1300);
   }).observe($("submitResult"), {attributes:true, attributeFilter:["class"]});
 
-  /* 모바일 너비에서만 켜짐. '전체 화면으로 보기'를 누르면 기존 화면으로 */
+  /* 모바일 너비(768px 이하)에서는 이 화면만, 그보다 넓으면 PC 화면(한눈에 보기)만 보임 */
   function apply(){
-    const on=mq.matches && !off, was=document.body.classList.contains("wz-on");
+    const on=mq.matches, was=document.body.classList.contains("wz-on");
     document.body.classList.toggle("wz-on", on);
     if(on && !was) show(steps().length ? "list" : "intro");
     if(!on && was){ clearTimeout(timer); busy=false; window.dispatchEvent(new Event("resize")); }   // 숨겨졌던 상단 바 높이를 다시 계산
   }
-  function setOff(v){
-    off=v; try{ v ? localStorage.setItem(OFF_KEY,"1") : localStorage.removeItem(OFF_KEY); }catch(e){}
-    apply(); window.scrollTo({top:0, behavior:"instant"});
-  }
-  $("wzEnter").addEventListener("click", ()=>setOff(false));
   mq.addEventListener("change", apply);
   apply();
 })();
